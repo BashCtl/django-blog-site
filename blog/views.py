@@ -2,10 +2,10 @@ from django.shortcuts import render
 from datetime import date
 # Create your views here.
 
-posts = [
+all_posts = [
     {
         "slug": "hike-in-the-mountains",
-        "image": "mountains.jpg"
+        "image": "mountains.jpg",
         "author": "Darko",
         "date": date(2023, 11 ,1),
         "title": "Mountain Hiking",
@@ -32,7 +32,7 @@ posts = [
      {
         "slug": "programming-is-fun",
         "image": "coding.jpg",
-        "author": "Maximilian",
+        "author": "Darko",
         "date": date(2022, 3, 10),
         "title": "Programming Is Great!",
         "excerpt": "Did you ever spend hours searching that one error in your code? Yep - that's what happened to me yesterday...",
@@ -53,7 +53,7 @@ posts = [
     {
         "slug": "into-the-woods",
         "image": "woods.jpg",
-        "author": "Maximilian",
+        "author": "Darko",
         "date": date(2020, 8, 5),
         "title": "Nature At Its Best",
         "excerpt": "Nature is amazing! The amount of inspiration I get when walking in nature is incredible!",
@@ -74,11 +74,20 @@ posts = [
 
 ]
 
+def get_date(post):
+    return post.get("date")
+
 def home_page(request):
-    return render(request, "blog/index.html")
+    sorted_posts = sorted(all_posts, key=get_date)
+    latest_posts = sorted_posts[-3:]
+    context = {"posts": latest_posts}
+    return render(request, "blog/index.html", context)
 
 def posts(request):
-    return render(request, "blog/all-posts.html")
+    context = {"posts": all_posts}
+    return render(request, "blog/all-posts.html", context)
 
 def post_detail(request, slug):
-    return render(request, "blog/post-detail.html")
+    post = next(post for post in all_posts if post["slug"] == slug)
+    context = {"post": post}
+    return render(request, "blog/post-detail.html", context)
