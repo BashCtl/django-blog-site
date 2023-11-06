@@ -5,4 +5,5 @@ urlpatterns = [
     path("", views.StartingPage.as_view(), name="home"),
     path("posts", views.AllPostsView.as_view(), name="posts"),
     path("posts/<slug:slug>", views.SinglePostView.as_view(), name="post-detail"),
+    path("read-later", views.ReadLaterView.as_view(), name="read-later"),
 ]
