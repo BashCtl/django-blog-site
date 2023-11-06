@@ -37,20 +37,19 @@ class SinglePostView(View):
     def get(self, request, slug):
         post = Post.objects.get(slug=slug)
         context = {"post": post, "tags": post.tags.all(),
-                   "form": CommentForm()}
+                   "form": CommentForm(), "comments": post.comments.all().order_by("-id")}
         return render(request, "blog/post-detail.html", context)
 
     def post(self, request, slug):
         form = CommentForm(request.POST)
         post = Post.objects.get(slug=slug)
-        
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
             comment.save()
             return HttpResponseRedirect(reverse("post-detail", args=[slug]))
 
-      
         context = {"post": post, "tags": post.tags.all(),
-                   "form": form}
+                   "form": form, "comments": post.comments.all().order_by("-id")}
         return render(request, "blog/post-detail.html", context)
